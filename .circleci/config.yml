@@ -1,0 +1,51 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@1.5.0
+
+jobs:
+  init:
+    docker:
+      - image: python:3.7.3-stretch
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "app/requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            # - v1-dependencies-
+      - run:
+          name: Install dependencies
+          command: |
+            python3 -m venv .venv
+            source .venv/bin/activate
+            make install
+      - save_cache:
+          paths:
+            - ./.venv  # TODO: Include in cache the "bin" directory
+          key: v1-dependencies-{{ checksum "app/requirements.txt" }}
+      - run:
+          name: Run lint
+          command: |
+            source .venv/bin/activate
+            make lint 
+
+
+workflows:
+  default:
+    jobs:
+      - init        
+      - docker/publish:
+          matrix:
+            parameters:
+              image: [$DOCKER_LOGIN/simpleflaskapp]
+              path: [simpleflaskapp]
+              docker-context: [simpleflaskapp]
+              deploy: [true]
+              # We publish two images with different version tags: 
+              # - numbered version
+              # - "latest"
+              # tag: ['$(<hello_app/VERSION.txt)-${CIRCLE_SHA1:0:7}', 'latest']
+              tag: ['$(simpleflaskapp/VERSION.txt)', 'latest']
+              update-description: [true]    
+          requires: [init]
