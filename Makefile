@@ -8,7 +8,7 @@ KEYPAIR_NAME=keyudapipo
 DEPLOYMENT_NAME=app
 NEW_IMAGE_NAME=registry.hub.docker.com/chisomjude/simpleflaskapp:latest
 CONTAINER_PORT=80
-HOST_PORT=8080
+HOST_PORT=8082
 KUBECTL=./bash/kubectl
 
 setup:
@@ -23,20 +23,16 @@ install:	# TODO: Add a Docker analysis (DevSecOps)
 	pip install -r app/requirements.txt
 	# pip install "ansible-lint[community,yamllint]"
 	
-	# pytest --version
-	# ansible --version
-	# ansible-lint --version
-
-	echo
-	echo "Installing: shellcheck"
-	./bash/install_shellcheck.sh
+	
 	echo
 	echo "Installing: hadolint"
 	./bash/install_hadolint.sh
 	echo
+
 	echo "Installing: kubectl"
 	./bash/install_kubectl.sh
 	echo
+	
 	echo "Installing: eksctl"
 	./bash/install_eksctl.sh
 	
