@@ -24,10 +24,6 @@ install:	# TODO: Add a Docker analysis (DevSecOps)
 	# pip install "ansible-lint[community,yamllint]"
 	
 	
-	echo
-	echo "Installing: hadolint"
-	./bash/install_hadolint.sh
-	echo
 
 	echo "Installing: kubectl"
 	./bash/install_kubectl.sh
