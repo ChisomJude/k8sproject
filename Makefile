@@ -22,10 +22,11 @@ install:	# TODO: Add a Docker analysis (DevSecOps)
 	pip install --upgrade pip &&\
 	pip install -r app/requirements.txt
 	# pip install "ansible-lint[community,yamllint]"
-	echo
-	pytest --version
+	
+	# pytest --version
 	# ansible --version
 	# ansible-lint --version
+
 	echo
 	echo "Installing: shellcheck"
 	./bash/install_shellcheck.sh
@@ -39,19 +40,14 @@ install:	# TODO: Add a Docker analysis (DevSecOps)
 	echo "Installing: eksctl"
 	./bash/install_eksctl.sh
 	
-test:
-	# Additional, optional, tests could go here
-	#python -m pytest -vv app/app.py
-	#python -m pytest 
+
 
 lint:
 	# https://github.com/koalaman/shellcheck: a linter for shell scripts
 	./bash/shellcheck -Cauto -a ./bash/*.sh
 	# https://github.com/hadolint/hadolint: a linter for Dockerfiles
 	./bash/hadolint app/Dockerfile
-	# https://www.pylint.org/: a linter for Python source code 
-	# This should be run from inside a virtualenv
-	pylint --output-format=colorized --disable=C app/app.py
+	
 
 run-app:
 	python3 app/app.py
