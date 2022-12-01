@@ -11,19 +11,9 @@ CONTAINER_PORT=80
 HOST_PORT=8082
 KUBECTL=./bash/kubectl
 
-setup:
-	# Create a python virtualenv & activate it
-	python3 -m venv ~/.myk8s
-	# source ~/.myk8s/bash/activate 
+
 
 install:	# TODO: Add a Docker analysis (DevSecOps)
-	# This should be run from inside a virtualenv
-	echo "Installing: dependencies..."
-	pip install --upgrade pip &&\
-	pip install -r app/requirements.txt
-	# pip install "ansible-lint[community,yamllint]"
-	
-	
 
 	echo "Installing: kubectl"
 	./bash/install_kubectl.sh
@@ -33,32 +23,11 @@ install:	# TODO: Add a Docker analysis (DevSecOps)
 	./bash/install_eksctl.sh
 	
 
-
-lint:
-	# https://github.com/koalaman/shellcheck: a linter for shell scripts
-	./bash/shellcheck -Cauto -a ./bash/*.sh
-	# https://github.com/hadolint/hadolint: a linter for Dockerfiles
-	./bash/hadolint app/Dockerfile
-	
-
-run-app:
-	python3 app/app.py
-
-build-docker:
-	./bash/build_docker.sh
-
-run-docker: build-docker
-	./bash/run_docker.sh
-
-upload-docker: build-docker
-	./bash/upload_docker.sh
-
 ci-validate:
 	# Required file: .circleci/config.yml
 	circleci config validate
 
 k8s-deployment: eks-create-cluster
-	# If using minikube, first run: minikube start
 	./bash/k8s_deployment.sh
 
 port-forwarding: 
