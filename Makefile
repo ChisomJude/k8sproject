@@ -9,18 +9,18 @@ DEPLOYMENT_NAME=app
 NEW_IMAGE_NAME=registry.hub.docker.com/chisomjude/simpleflaskapp:latest
 CONTAINER_PORT=80
 HOST_PORT=8080
-KUBECTL=./bin/kubectl
+KUBECTL=./bash/kubectl
 
 setup:
 	# Create a python virtualenv & activate it
 	python3 -m venv ~/.myk8s
-	# source ~/.myk8s/bin/activate 
+	# source ~/.myk8s/bash/activate 
 
 install:	# TODO: Add a Docker analysis (DevSecOps)
 	# This should be run from inside a virtualenv
 	echo "Installing: dependencies..."
 	pip install --upgrade pip &&\
-	pip install -r hello_app/requirements.txt
+	pip install -r app/requirements.txt
 	# pip install "ansible-lint[community,yamllint]"
 	echo
 	pytest --version
@@ -28,42 +28,42 @@ install:	# TODO: Add a Docker analysis (DevSecOps)
 	# ansible-lint --version
 	echo
 	echo "Installing: shellcheck"
-	./bin/install_shellcheck.sh
+	./bash/install_shellcheck.sh
 	echo
 	echo "Installing: hadolint"
-	./bin/install_hadolint.sh
+	./bash/install_hadolint.sh
 	echo
 	echo "Installing: kubectl"
-	./bin/install_kubectl.sh
+	./bash/install_kubectl.sh
 	echo
 	echo "Installing: eksctl"
-	./bin/install_eksctl.sh
+	./bash/install_eksctl.sh
 	
 test:
 	# Additional, optional, tests could go here
-	#python -m pytest -vv hello_app/hello.py
+	#python -m pytest -vv app/app.py
 	#python -m pytest 
 
 lint:
 	# https://github.com/koalaman/shellcheck: a linter for shell scripts
-	./bin/shellcheck -Cauto -a ./bin/*.sh
+	./bash/shellcheck -Cauto -a ./bash/*.sh
 	# https://github.com/hadolint/hadolint: a linter for Dockerfiles
-	./bin/hadolint hello_app/Dockerfile
+	./bash/hadolint app/Dockerfile
 	# https://www.pylint.org/: a linter for Python source code 
 	# This should be run from inside a virtualenv
-	pylint --output-format=colorized --disable=C hello_app/hello.py
+	pylint --output-format=colorized --disable=C app/app.py
 
 run-app:
 	python3 app/app.py
 
 build-docker:
-	./bin/build_docker.sh
+	./bash/build_docker.sh
 
 run-docker: build-docker
-	./bin/run_docker.sh
+	./bash/run_docker.sh
 
 upload-docker: build-docker
-	./bin/upload_docker.sh
+	./bash/upload_docker.sh
 
 ci-validate:
 	# Required file: .circleci/config.yml
@@ -71,7 +71,7 @@ ci-validate:
 
 k8s-deployment: eks-create-cluster
 	# If using minikube, first run: minikube start
-	./bin/k8s_deployment.sh
+	./bash/k8s_deployment.sh
 
 port-forwarding: 
 	# Needed for "minikube" only
@@ -100,11 +100,11 @@ rollback:
 	${KUBECTL} get deployments -o wide
 
 k8s-cleanup-resources:
-	./bin/k8s_cleanup_resources.sh
+	./bash/k8s_cleanup_resources.sh
 
 eks-create-cluster:
-	./bin/eks_create_cluster.sh
+	./bash/eks_create_cluster.sh
 
 eks-delete-cluster:
-	./bin/eksctl delete cluster --name "${CLUSTER_NAME}" \
+	./bash/eksctl delete cluster --name "${CLUSTER_NAME}" \
 		--region "${REGION_NAME}"
