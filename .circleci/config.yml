@@ -4,32 +4,21 @@ orbs:
   docker: circleci/docker@1.5.0
 
 
-  init:
-    docker:
-      - image: python:3.7.3-stretch
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "app/requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            # - v1-dependencies-
-    
-
+ 
 workflows:
   default:
     jobs:       
       - docker/publish:
           matrix:
             parameters:
-              image: [$DOCKER_LOGIN/simpleflaskapp]
-              path: [simpleflaskapp]
-              docker-context: [simpleflaskapp]
+              image: [$DOCKER_LOGIN/myflaskapp]
+              path: [myflaskapp]
+              docker-context: [myflaskapp]
               deploy: [true]
               # We publish two images with different version tags: 
               # - numbered version
               # - "latest"
               # tag: ['$(<hello_app/VERSION.txt)-${CIRCLE_SHA1:0:7}', 'latest']
-              tag: ['$(simpleflaskapp/VERSION.txt)', 'latest']
+              tag: ['$(myflaskapp/VERSION.txt)', 'latest']
               update-description: [true]    
         
